@@ -12,7 +12,6 @@ RUN yum -y update; yum clean all;\
     rpm --import http://weewx.com/keys.html;\
     curl http://weewx.com/downloads/weewx-${VER}.rhel.noarch.rpm -o weewx-${VER}.rhel.noarch.rpm;\
     yum -y install weewx-${VER}.rhel.noarch.rpm;\
-    systemctl enable weewx;\
     (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done); \
     rm -f /lib/systemd/system/multi-user.target.wants/*;\
     rm -f /etc/systemd/system/*.wants/*;\
@@ -25,6 +24,8 @@ RUN yum -y update; yum clean all;\
 COPY ./extensions/*.tgz ${HOME}/extensions/
 RUN find ${HOME}/extensions/ -name '*.*' -exec wee_extension --install={} \;
 COPY ./extensions/idokep.py /usr/share/weewx/user/
+COPY ./weewx.service /etc/systemd/system
+RUN systemctl enable weewx;
 
 VOLUME [ "/sys/fs/cgroup" ]
 VOLUME [ "/etc/weewx" ]
