@@ -30,4 +30,5 @@ RUN systemctl enable weewx;
 VOLUME [ "/sys/fs/cgroup" ]
 VOLUME [ "/etc/weewx" ]
 VOLUME [ "/var/www/weewx" ]
+VOLUME [ "/var/lib/weewx/" ]
 CMD ["/usr/sbin/init"]
