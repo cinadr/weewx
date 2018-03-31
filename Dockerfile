@@ -22,8 +22,9 @@ RUN yum -y update; yum clean all;\
     rm -f /lib/systemd/system/basic.target.wants/*;\
     rm -f /lib/systemd/system/anaconda.target.wants/*;\
     mkdir -p ${HOME}/extensions
-COPY ./extensions/* ${HOME}/extensions/
+COPY ./extensions/*.tgz ${HOME}/extensions/
 RUN find ${HOME}/extensions/ -name '*.*' -exec wee_extension --install={} \;
+COPY ./extensions/idokep.py /usr/share/weewx/user/
 
 VOLUME [ "/sys/fs/cgroup" ]
 VOLUME [ "/etc/weewx" ]
