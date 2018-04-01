@@ -7,7 +7,7 @@ ARG VER="3.8.0-1"
 ARG HOME=/home/weewx
 
 RUN yum -y update; yum clean all;\ 
-    yum -y install python-configobj python-cheetah python-imaging python-setuptools;\
+    yum -y install python-configobj python-cheetah python-imaging python-setuptools rsyslog;\
     easy_install pyserial pyusb;\ 
     rpm --import http://weewx.com/keys.html;\
     curl http://weewx.com/downloads/weewx-${VER}.rhel.noarch.rpm -o weewx-${VER}.rhel.noarch.rpm;\
@@ -25,7 +25,10 @@ COPY ./extensions/*.tgz ${HOME}/extensions/
 RUN find ${HOME}/extensions/ -name '*.*' -exec wee_extension --install={} \;
 COPY ./extensions/idokep.py /usr/share/weewx/user/
 COPY ./weewx.service /etc/systemd/system
-RUN systemctl enable weewx;
+RUN ln -s /etc/weewx/rsyslog.d/weewx.conf /etc/rsyslog.d;\
+    ln -sf /dev/stdout /var/log/weewx.log; \
+    systemctl enable rsyslog;\
+    systemctl enable weewx;
 
 VOLUME [ "/sys/fs/cgroup" ]
 VOLUME [ "/etc/weewx" ]
