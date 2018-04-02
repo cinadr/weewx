@@ -37,4 +37,5 @@ VOLUME [ "/etc/weewx" ]
 VOLUME [ "/var/www/weewx" ]
 VOLUME [ "/var/lib/weewx/" ]
 #CMD ["/usr/sbin/init"]
-CMD [ "/usr/share/weewx/weewxd /etc/weewx/weewx.conf" ]
+
+CMD [ "/etc/init.d/weewx start" ]
