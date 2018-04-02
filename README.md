@@ -1,4 +1,4 @@
-WEEWX Docker container based on centos:latest (systemd enabled) with extensions
+WEEWX Docker container based on centos:latest with extensions
 
 Howto install extensions
 
