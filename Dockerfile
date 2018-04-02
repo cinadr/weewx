@@ -23,6 +23,8 @@ RUN yum -y update; yum clean all;\
 #    rm -f /lib/systemd/system/basic.target.wants/*;\
 #    rm -f /lib/systemd/system/anaconda.target.wants/*;\
 
+ENV TZ=Europe/Budapest
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 COPY ./extensions/*.tgz ${HOME}/extensions/
 RUN find ${HOME}/extensions/ -name '*.*' -exec wee_extension --install={} \;
 COPY ./extensions/idokep.py /usr/share/weewx/user/
