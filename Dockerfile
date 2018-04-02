@@ -8,6 +8,7 @@ ARG HOME=/home/weewx
 
 RUN yum -y update; yum clean all;\ 
     yum -y install python-configobj python-cheetah python-imaging python-setuptools;\
+    yum -y groupinstall "Fonts";\
     easy_install pyserial pyusb;\ 
     rpm --import http://weewx.com/keys.html;\
     curl http://weewx.com/downloads/weewx-${VER}.rhel.noarch.rpm -o weewx-${VER}.rhel.noarch.rpm;\
