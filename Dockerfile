@@ -6,13 +6,15 @@ MAINTAINER Zsolt Zimmermann
 ARG VER="3.8.0-1"
 ARG HOME=/home/weewx
 
-RUN yum -y update; yum clean all;\ 
-    yum -y install python-configobj python-cheetah python-imaging python-setuptools;\
+RUN yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm;\
+    yum -y update; \
+    yum -y install python-configobj python-cheetah python-imaging python-setuptools pyephem;\
     yum -y groupinstall "Fonts";\
     easy_install pyserial pyusb;\ 
-    rpm --import http://weewx.com/keys.html;\
+    rpm --import http://weewx.com/keys.html;\    
     curl http://weewx.com/downloads/weewx-${VER}.rhel.noarch.rpm -o weewx-${VER}.rhel.noarch.rpm;\
     yum -y install weewx-${VER}.rhel.noarch.rpm;\
+    yum clean all;\ 
     mkdir -p ${HOME}/extensions
 #    (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done); \
 #    rm -f /lib/systemd/system/multi-user.target.wants/*;\
