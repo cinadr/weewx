@@ -1,0 +1,88 @@
+version: '3.8'
+
+networks:
+  weewx-net:
+    driver: bridge
+    name: weewx-net
+    driver_opts: 
+      com.docker.network.bridge.name: bridge8
+      com.docker.network.bridge.host_binding_ipv4: 192.168.1.8
+      com.docker.network.bridge.enable_icc: 'true'
+      com.docker.network.bridge.enable_ip_masquerade: 'true'
+      com.docker.network.bridge.default: 'false'
+      com.docker.network.driver.mtu: 1500
+  bridge241:
+    external:
+      name: bridge241
+
+volumes:
+  html: {}
+  config: {}
+  data: {}
+  skins: {}
+  mconfig: 
+    external: 
+      name: mosquitto-config
+  mdata: 
+    external: 
+      name: mosquitto-data
+  mlog: 
+    external: 
+      name: mosquitto-log
+
+services:
+  weewx:
+    build: 
+       context: .
+       dockerfile: Dockerfile.dev
+    image: cina/weewx4:local
+    container_name: weewx
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup
+      - html:/var/www/weewx
+      - config:/etc/weewx/config
+      - data:/var/lib/weewx
+      - skins:/etc/weewx/skins
+    networks: 
+      - weewx-net
+    ports:
+      - 80:80
+    expose: 
+      - 80
+    dns:
+      - 192.168.1.4
+    restart: unless-stopped
+    tty: true
+
+  webserver:
+    image: pierrezemb/gostatic
+    container_name: webserver
+    volumes:
+      - html:/srv/http
+    networks: 
+      - bridge241
+    ports:
+      - 8043:8043
+    expose: 
+      - 8043 
+    restart: unless-stopped
+
+  mqtt:
+    image: eclipse-mosquitto:latest
+    container_name: mqtt
+    volumes:
+      - /mnt/storage/vivotek:/mosquitto/cert
+      - mconfig:/mosquitto/config
+      - mdata:/mosquitto/data
+      - mlog:/mosquitto/log
+    networks:
+      - bridge241
+    ports:
+      - 1883:1883 
+      - 9001:9001 
+      - 8883:8883
+    expose:
+      - 1883
+      - 9001
+      - 8883
+    restart: unless-stopped
